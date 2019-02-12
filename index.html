@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="https://cdn.bootcss.com/babel-standalone/7.0.0-beta.3/babel.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.3/vue.min.js"></script>
+
+    <script src="lib/vuep/vuep.js"></script>
+    <link rel="stylesheet" href="lib/vuep/vuep.css">
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .vuep {
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+        }
+
+        .vuep-preview, .vuep-error {
+            padding: 0 !important;
+        }
+
+        .vuep-preview {
+            border: none !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .vuep-editor {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <vuep v-model="template" :options="hide_options"></vuep>
+
+</div>
+<script>
+
+    function replaceTemplateRoot(str, root) {
+        return str.replace(/__DIR__\//g, root + "/");
+    }
+
+    function asyncLoadJs(url) {
+        return new Promise((resolve, reject) => {
+            for (let script of document.getElementsByTagName("script")) {
+                if (script.src === url) resolve();
+            }
+            console.debug("loading...", url);
+            let script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            document.body.appendChild(script);
+            script.onload = () => {
+                console.debug("loaded " + url);
+                resolve();
+            };
+            script.onerror = () => {
+                reject();
+            }
+        })
+    }
+
+    function loadCss(url) {
+        console.debug("loading... ", url);
+        let link = document.createElement("link");
+        link.setAttribute("rel", "stylesheet");
+        link.setAttribute("type", "text/css");
+        link.setAttribute("href", url);
+
+        let heads = document.getElementsByTagName("head");
+        if (heads.length)
+            heads[0].appendChild(link);
+        else
+            document.documentElement.appendChild(link);
+    }
+
+    new Vue({
+        el: '#app',
+
+        data: () => ({
+            template: "<template><div>loading...</div></template>",
+            hide_options: {
+                "lineNumbers": false,
+                "mode": "text",
+            }
+        }),
+        methods: {},
+        created() {
+            fetch("data.json").then(responese => {
+                return responese.json()
+            }).then(info => {
+                document.title = info["html-title"];
+
+                let templateRoot = `templates/${info["template-name"]}`;
+
+                fetch(`${templateRoot}/config.json`).then(responese => {
+                    return responese.json()
+                }).then
+                (async config => {
+
+                    if (config["external-js"] instanceof Array) {
+                        for (let url of config["external-js"]) {
+                            await asyncLoadJs(replaceTemplateRoot(url, templateRoot))
+                        }
+                    }
+
+                    if (config["external-css"] instanceof Array) {
+                        for (let url of config["external-css"]) {
+                            loadCss(replaceTemplateRoot(url, templateRoot))
+                        }
+                    }
+
+                    fetch(`${templateRoot}/index.vue`).then(responese => {
+                        return responese.text()
+                    }).then(template => {
+                        template = template.replace(/info: undefined/, "info: " + JSON.stringify(info))
+                        template = replaceTemplateRoot(template, templateRoot);
+                        this.template = template
+
+
+                    })
+                })
+
+            }).catch(err => {
+                alert(err)
+            })
+        }
+    });
+
+</script>
+</body>
+</html>

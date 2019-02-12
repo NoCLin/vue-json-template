@@ -1,0 +1,8 @@
+{
+  "external-js": [
+    "https://unpkg.com/element-ui/lib/index.js"
+  ],
+  "external-css": [
+    "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "external-js": [
+    "__DIR__/lib/marked.js"
+  ],
+  "external-css": [
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "html-title": "XXX的简历",
+  "template-name": "resume-diygod",
+  "name": "XXX",
+  "gender": "男",
+  "slogan": "hhh",
+  "school": "XXU",
+  "wechat": "hhh",
+  "qq": "10001",
+  "email": "xxx@email.xxu.edu.cn",
+  "blog": "https://github.com",
+  "github": "~~~",
+  "cellphone": "13800138000",
+  "note": [
+    "hhh"
+  ],
+  "educations": [
+    {
+      "school": "XX大学 XXXX  (20XX.9 - 20XX.6)",
+      "info": [
+        "...",
+        "..."
+      ]
+    }
+  ],
+  "exps": [
+    {
+      "company": "XXX",
+      "img": "",
+      "info": "",
+      "projects": [
+        {
+          "name": "Project1",
+          "info": [
+            "Situation: \n\n",
+            "Task: \n\n",
+            "Action: \n\n",
+            "Result: \n\n"
+          ]
+        },
+        {
+          "name": "Project2",
+          "info": [
+            "Situation: \n\n",
+            "Task: \n\n",
+            "Action: \n\n",
+            "Result: \n\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "type": "type1",
+      "info": "精通..."
+    },
+    {
+      "type": "type2",
+      "info": "熟悉..."
+    }
+  ]
+}
