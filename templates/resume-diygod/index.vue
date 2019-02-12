@@ -96,21 +96,16 @@
 </template>
 
 <script>
-
     export default {
-        methods: {
-
-            markdown_render(arg) {
-                if (arg instanceof Array) {
-                    return marked(arg.reduce((total, str) => total + str))
-                } else {
-                    return marked(arg)
-                }
-            }
-        },
-        data: () => ({
-            info: undefined, // 信息注入点,
-        })
+      methods: {
+        markdown_render (arg) {
+          // eslint-disable-next-line no-undef
+          return marked((arg instanceof Array) ? arg.reduce((total, str) => total + str) : arg)
+        }
+      },
+      data: () => ({
+        info: undefined // 信息注入点,
+      })
     }
 </script>
 

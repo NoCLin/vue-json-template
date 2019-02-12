@@ -50,29 +50,26 @@
 </template>
 
 <script>
-
-
     export default {
 
-        methods: {
-            onSubmit() {
-                console.log('submit!');
-            }
-        },
-        data: () => ({
-            info: undefined, // 信息注入点
-            form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
-            }
-        }),
+      methods: {
+        onSubmit () {
+          console.log('submit!')
+        }
+      },
+      data: () => ({
+        info: undefined, // 信息注入点
+        form: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
+        }
+      })
     }
-
 </script>
 

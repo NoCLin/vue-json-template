@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "standard"
+  ],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "plugins": [
+    "html",
+    "vue"
+  ],
+  "settings": {
+    "html/html-extensions": [
+      ".html",
+      ".vue"
+    ]
+  }
+}

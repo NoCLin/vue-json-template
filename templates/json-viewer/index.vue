@@ -6,17 +6,16 @@
 
 <script>
     export default {
-        methods: {
-            formatJSON: function (theJSON) {
-                return JSON.stringify(theJSON, true, 2);
-            }
-        },
-        data: () => ({
-            info: undefined, // 信息注入点
-        }),
-        created() {
+      methods: {
+        formatJSON: function (theJSON) {
+          return JSON.stringify(theJSON, true, 2)
         }
+      },
+      data: () => ({
+        info: undefined // 信息注入点
+      }),
+      created () {
+      }
     }
-
 </script>
 
