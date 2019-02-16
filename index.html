@@ -227,7 +227,7 @@ animation-delay: 0.8s;
         }
 
         let template = await (await fetch(templateRoot + '/index.vue')).text()
-        template = template.replace(/info: undefined/, 'info: ' + JSON.stringify(data))
+        template = template.replace(/DATA_INJECT_HERE/, JSON.stringify(data))
         this.template = replaceTemplateRoot(template, templateRoot)
       },
       methods: {

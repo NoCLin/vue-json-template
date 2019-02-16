@@ -1,51 +1,51 @@
 <template>
     <div class="container">
-        <div v-if="info">
+        <div>
             <div class="sidebar">
                 <div class="title">
                     <img src="__DIR__/img/resume-head.jpg">
-                    <h1>{{info.name}}</h1>
-                    <h2>{{info.slogan}}</h2>
+                    <h1>{{name}}</h1>
+                    <h2>{{slogan}}</h2>
                 </div>
                 <ul class="side-info">
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Contact. 联系方式</dt>
-                        <dd><i class="icon-phone-1"></i>电话: {{info.cellphone}}</dd>
+                        <dd><i class="icon-phone-1"></i>电话: {{cellphone}}</dd>
                         <dd><i class="icon-mail-alt"></i>
-                            邮箱: <a :href="'mailto:'+info.email" target="_blank">{{info.email}}</a>
+                            邮箱: <a :href="'mailto:'+email" target="_blank">{{email}}</a>
                         </dd>
-                        <dd v-if="info.wechat"><i class="icon-wechat"></i>微信: {{info.wechat}}</dd>
-                        <dd v-if="info.qq"><i class="icon-qq"></i>QQ: {{info.qq}}</dd>
+                        <dd v-if="wechat"><i class="icon-wechat"></i>微信: {{wechat}}</dd>
+                        <dd v-if="qq"><i class="icon-qq"></i>QQ: {{qq}}</dd>
                     </li>
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Application. 应聘岗位</dt>
-                        <dd>{{info['apply-position']}}</dd>
+                        <dd>{{this["apply-position"]}}</dd>
                     </li>
                 </ul>
-                <div class="note" v-html="markdown_render(info.note)">
+                <div class="note" v-html="markdown_render(note)">
                 </div>
             </div>
             <div class="main">
                 <ul class="main-info">
                     <li class="someRight">
-                        <dt><i class="icon-bookmark"></i>Basic info. 基本信息</dt>
-                        <dd><strong>个人信息:</strong> <span>{{info.name}} / {{info.gender}}</span></dd>
-                        <dd><strong>毕业院校:</strong> <span>{{info.school}}</span></dd>
+                        <dt><i class="icon-bookmark"></i>Basic  基本信息</dt>
+                        <dd><strong>个人信息:</strong> <span>{{name}} / {{gender}}</span></dd>
+                        <dd><strong>毕业院校:</strong> <span>{{school}}</span></dd>
 
                         <dd>
                             <strong>博客:</strong>
-                            <a :href="info.blog" target="_blank">{{info.blog}}</a>
+                            <a :href="blog" target="_blank">{{blog}}</a>
                         </dd>
-                        <dd v-if="info.github">
+                        <dd v-if="github">
                             <strong>GitHub:</strong>
-                            <a :href="'https://github.com/'+info.github" target="_blank">@{{info.github}}</a>
+                            <a :href="'https://github.com/'+github" target="_blank">@{{github}}</a>
                         </dd>
                     </li>
                     <li>
                         <dt><i class="icon-bookmark"></i>Education. 教育背景</dt>
                         <div>
                             <ul class="exp">
-                                <li v-for="education in info.educations">
+                                <li v-for="education in educations">
                                     <div class="circle"></div>
                                     <h4>{{education.school}}</h4>
                                     <p v-html="markdown_render(education.info)"></p>
@@ -55,7 +55,7 @@
                     </li>
                     <li>
                         <dt><i class="icon-bookmark"></i>Experience. 项目与工作经验</dt>
-                        <div v-for="exp in info.exps">
+                        <div v-for="exp in exps">
                             <h3>
                                 <img v-if="exp.img" :src="exp.img">
                                 <span v-html="markdown_render(exp.company)"></span>
@@ -79,7 +79,7 @@
                     <li>
                         <dt><i class="icon-bookmark"></i>Skill. 技能清单</dt>
                         <ul class="exp">
-                            <li v-for="skill in info.skills">
+                            <li v-for="skill in skills">
                                 <div class="circle"></div>
                                 <h4 v-html="markdown_render(skill.type)"></h4>
                                 <p v-html="markdown_render(skill.info)"></p>
@@ -103,9 +103,10 @@
           return marked((arg instanceof Array) ? arg.reduce((total, str) => total + str) : arg)
         }
       },
-      data: () => ({
-        info: undefined // 信息注入点,
-      })
+      // eslint-disable-next-line no-undef
+      data: () => (Object.assign(DATA_INJECT_HERE,
+        {}
+      ))
     }
 </script>
 

@@ -32,9 +32,9 @@
 }
 ```
 
-`data.json` 为数据文件，用于注入到模板中 `index.vue` 的 `info`。必须包含`html-title`。
+`data.json` 为数据文件，用于注入到模板中 `index.vue` 的 `data`。必须包含`html-title`。
 
-`index.vue` 为模板入口组件，`data`中必须包含 `info: undefined` ，用于提供注入点(用文本替换实现注入，比较粗暴2333)。[vuep.run 在线调试](https://vuep.netlify.com/)
+`index.vue` 为模板入口组件，`data`中必须包含 `DATA_INJECT_HERE` ，用于提供注入点(用文本替换实现注入，比较粗暴2333)。
 
 `config.json` 为模板配置文件，可以指定自定义的外部 JS/CSS，指定需要继承的模板。
 
@@ -49,6 +49,8 @@
 //  ,"extends": "resume-diygod"
 }
 ```
+
+[vuep.run 在线调试](https://vuep.netlify.com/)
 
 ## 注意
 
