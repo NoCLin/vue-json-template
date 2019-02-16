@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Loading...</title>
@@ -7,12 +7,14 @@
     <script src="https://cdn.bootcss.com/babel-standalone/7.0.0-beta.3/babel.min.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.6.3/vue.min.js"></script>
 
-    <script src="lib/vuep/vuep.js"></script>
-    <link rel="stylesheet" href="lib/vuep/vuep.css">
+    <script src="lib/vuep.js"></script>
+    <link rel="stylesheet" href="lib/vuep.css">
 
     <style>
-        body {
+        html, body, #app {
             margin: 0;
+            width: 100%;
+            height: 100%;
         }
 
         .vuep {
@@ -35,20 +37,55 @@
             display: none;
         }
 
+        .template-list {
+            margin-top: 100px;
+            background: #fff;
+            z-index: 999;
+            border: 1px solid #eee;
+            box-shadow: 0 .5em 1em 0 rgba(0, 0, 0, .1);
+            border-radius: 1px;
+        }
+
+        .template-list a {
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            display: block;
+            color: #1a1a1a;
+            padding: 2px;
+            text-decoration: none
+        }
+
+        .template-list a:hover {
+            color: #fff;
+            background: #42b983
+        }
+
+
     </style>
 </head>
 
 <body>
 <div id="app">
-    <vuep v-model="template" :options="hide_options"></vuep>
+
+    <div class="template-list" v-if="showTemplateList" v-for="template in templateList">
+        <a href="javascript:;" @click="changeTemplate(template)">{{template}}</a>
+    </div>
+    <vuep v-if="!showTemplateList" v-model="template" :iframe="vuepIframeMode"></vuep>
 
 </div>
+
 <script>
     function replaceTemplateRoot (str, root) {
       return str.replace(/__DIR__\//g, root + '/')
     }
 
-    function asyncLoadJs (url) {
+    function getQueryString (key) {
+      let result = location.search.match(new RegExp('[?&]' + key + '=([^&]+)', 'i'))
+      return result !== null ? (result[1] || '') : ''
+    }
+
+    function asyncLoadJs (document, url) {
       return new Promise((resolve, reject) => {
         for (let script of document.getElementsByTagName('script')) {
           if (script.src === url) resolve()
@@ -68,8 +105,13 @@
       })
     }
 
-    function loadCss (url) {
-      console.debug('loading... ', url)
+    function loadCss (document, url) {
+      for (let link of document.getElementsByTagName('link')) {
+        if (link.rel === 'stylesheet' && link.href === url) {
+          return
+        }
+      }
+      console.debug('loading css... ', url)
       let link = document.createElement('link')
       link.setAttribute('rel', 'stylesheet')
       link.setAttribute('type', 'text/css')
@@ -83,54 +125,119 @@
       }
     }
 
+    const loadingPlaceholder = `
+<template>
+<div class="loading">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+</template>
+<style>
+.loading {
+width: 80px;
+height: 40px;
+margin: 0 auto;
+margin-top: 100px;
+}
+
+.loading span {
+display: inline-block;
+width: 8px;
+height: 100%;
+border-radius: 4px;
+background: lightgreen;
+animation: load 1s ease infinite;
+}
+
+@keyframes load {
+0%, 100% {
+    height: 40px;
+    background: lightgreen;
+}
+50% {
+    height: 70px;
+    margin: -15px 0;
+    background: lightblue;
+}
+}
+
+.loading span:nth-child(2) {
+animation-delay: 0.2s;
+}
+
+.loading span:nth-child(3) {
+animation-delay: 0.4s;
+}
+
+.loading span:nth-child(4) {
+animation-delay: 0.6s;
+}
+
+.loading span:nth-child(5) {
+animation-delay: 0.8s;
+}
+</style>
+`
+
     // eslint-disable-next-line no-undef,no-new
     new Vue({
       el: '#app',
       data: () => ({
-        template: '<template><div>loading...</div></template>',
-        hide_options: {
-          'lineNumbers': false,
-          'mode': 'text'
-        }
+        template: loadingPlaceholder,
+        templateList: [],
+        vuepIframeMode: false,
+        showTemplateList: (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && getQueryString('template') === ''
       }),
-      created () {
-        fetch('data.json').then(responese => {
-          return responese.json()
-        }).then(info => {
-          document.title = info['html-title']
+      async created () {
+        const templateIndex = await (await fetch('templates/index.json')).json()
+        this.templateList = templateIndex['templates']
+        if (this.showTemplateList) return
+        let templateName = getQueryString('template') || templateIndex['default']
+        let templateRoot = 'templates/' + templateName
 
-          const templateRoot = `templates/${info['template-name']}`
-          const templateConfig = templateRoot + '/config.json'
-          const templateIndex = templateRoot + '/index.vue'
+        const data = await (await fetch(templateRoot + '/data.json')).json() // data 不继承
+        document.title = data['html-title']
 
-          fetch(templateConfig).then(responese => {
-            return responese.json()
-          }).then(async config => {
-            if (config['external-js'] instanceof Array) {
-              for (let url of config['external-js']) {
-                await asyncLoadJs(replaceTemplateRoot(url, templateRoot))
-              }
-            }
+        let config // 继承 config 与 template
+        while (true) {
+          config = await (await fetch(templateRoot + '/config.json')).json()
+          if (!config['extends']) {
+            break
+          } else {
+            templateName = config['extends']
+            templateRoot = 'templates/' + templateName
+          }
+        }
 
-            if (config['external-css'] instanceof Array) {
-              for (let url of config['external-css']) {
-                loadCss(replaceTemplateRoot(url, templateRoot))
-              }
-            }
+        // FIXME: iframe模式下，加载前外部js失败
+        let doc = this.vuepIframeMode ? window.frames[0].document : document
 
-            fetch(templateIndex).then(responese => {
-              return responese.text()
-            }).then(template => {
-              template = template.replace(/info: undefined/, 'info: ' + JSON.stringify(info))
-              template = replaceTemplateRoot(template, templateRoot)
-              this.template = template
-            })
-          })
-        }).catch(err => {
-          alert(err)
-        })
+        if (config['external-js'] instanceof Array) {
+          for (let url of config['external-js']) {
+            await asyncLoadJs(doc, replaceTemplateRoot(url, templateRoot))
+          }
+        }
+
+        if (config['external-css'] instanceof Array) {
+          for (let url of config['external-css']) {
+            loadCss(doc, replaceTemplateRoot(url, templateRoot))
+          }
+        }
+
+        let template = await (await fetch(templateRoot + '/index.vue')).text()
+        template = template.replace(/info: undefined/, 'info: ' + JSON.stringify(data))
+        this.template = replaceTemplateRoot(template, templateRoot)
       },
-      methods: {}
+      methods: {
+        changeTemplate (template) {
+          if (template !== undefined) {
+            window.location = 'index.html?template=' + template
+          }
+        }
+      }
     })
 </script>
 </body>

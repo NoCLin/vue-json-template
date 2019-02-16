@@ -19,7 +19,7 @@
                     </li>
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Application. 应聘岗位</dt>
-                        <dd>前端工程师</dd>
+                        <dd>{{info['apply-position']}}</dd>
                     </li>
                 </ul>
                 <div class="note" v-html="markdown_render(info.note)">

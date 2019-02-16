@@ -1,8 +1,0 @@
-{
-  "external-js": [
-    "__DIR__/json-tree.js"
-  ],
-  "external-css": [
-    "__DIR__/json-tree.css"
-  ]
-}

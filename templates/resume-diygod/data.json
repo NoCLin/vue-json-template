@@ -1,6 +1,5 @@
 {
   "html-title": "XXX的简历",
-  "template-name": "resume-diygod",
   "name": "XXX",
   "gender": "男",
   "slogan": "hhh",
@@ -11,6 +10,7 @@
   "blog": "https://github.com",
   "github": "~~~",
   "cellphone": "13800138000",
+  "apply-position": "XX工程师",
   "note": [
     "hhh"
   ],

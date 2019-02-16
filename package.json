@@ -1,12 +1,13 @@
 {
   "name": "vue-json-template",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "index.js",
   "repository": "",
   "author": "NoCLin <engineelin@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint index.html **/*.vue"
+    "lint": "eslint index.html **/*.vue",
+    "lint-fix": "eslint index.html **/*.vue --fix"
   },
   "devDependencies": {
     "eslint": "^5.13.0",

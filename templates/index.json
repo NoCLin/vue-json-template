@@ -1,0 +1,8 @@
+{
+  "default": "resume-diygod",
+  "templates": [
+    "elementui-demo",
+    "resume-diygod",
+    "resume-diygod-sub"
+  ]
+}
