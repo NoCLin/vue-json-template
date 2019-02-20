@@ -2,15 +2,18 @@
   "html-title": "XXX的简历",
   "name": "XXX",
   "gender": "男",
+  "birth": "19XX.XX",
   "slogan": "hhh",
   "school": "XXU",
-  "wechat": "hhh",
-  "qq": "10001",
-  "email": "xxx@email.xxu.edu.cn",
-  "blog": "https://github.com",
-  "github": "~~~",
-  "cellphone": "13800138000",
   "apply-position": "XX工程师",
+  "contact":{
+    "wechat": "hhh",
+    "qq": "10001",
+    "email": "xxx@email.xxu.edu.cn",
+    "blog": "https://github.com",
+    "github": "~~~",
+    "cellphone": "13800138000"
+  },
   "note": [
     "hhh"
   ],

@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div>
+        <div v-if="name">
             <div class="sidebar">
                 <div class="title">
                     <img src="__DIR__/img/resume-head.jpg">
@@ -10,12 +10,21 @@
                 <ul class="side-info">
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Contact. 联系方式</dt>
-                        <dd><i class="icon-phone-1"></i>电话: {{cellphone}}</dd>
-                        <dd><i class="icon-mail-alt"></i>
-                            邮箱: <a :href="'mailto:'+email" target="_blank">{{email}}</a>
+                        <dd><i class="icon-phone-1"></i>
+                            {{contact.cellphone}}
                         </dd>
-                        <dd v-if="wechat"><i class="icon-wechat"></i>微信: {{wechat}}</dd>
-                        <dd v-if="qq"><i class="icon-qq"></i>QQ: {{qq}}</dd>
+                        <dd v-if="contact.email">
+                            <i class="icon-mail-alt"></i>
+                            {{contact.email}}
+                        </dd>
+                        <dd v-if="contact.wechat">
+                            <i class="icon-wechat"></i>
+                            {{contact.wechat}}
+                        </dd>
+                        <dd v-if="contact.qq">
+                            <i class="icon-qq"></i>
+                            {{contact.qq}}
+                        </dd>
                     </li>
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Application. 应聘岗位</dt>
@@ -28,17 +37,16 @@
             <div class="main">
                 <ul class="main-info">
                     <li class="someRight">
-                        <dt><i class="icon-bookmark"></i>Basic  基本信息</dt>
-                        <dd><strong>个人信息:</strong> <span>{{name}} / {{gender}}</span></dd>
+                        <dt><i class="icon-bookmark"></i>Basic info. 基本信息</dt>
+                        <dd><strong>{{name}} / {{gender}} / {{birth}}</strong></dd>
                         <dd><strong>毕业院校:</strong> <span>{{school}}</span></dd>
-
-                        <dd>
+                        <dd v-if="contact.blog">
                             <strong>博客:</strong>
-                            <a :href="blog" target="_blank">{{blog}}</a>
+                            <a :href="contact.blog" target="_blank">{{contact.blog}}</a>
                         </dd>
-                        <dd v-if="github">
+                        <dd v-if="contact.github">
                             <strong>GitHub:</strong>
-                            <a :href="'https://github.com/'+github" target="_blank">@{{github}}</a>
+                            <a :href="'https://github.com/'+contact.github" target="_blank">@{{contact.github}}</a>
                         </dd>
                     </li>
                     <li>
@@ -81,7 +89,6 @@
                         <ul class="exp">
                             <li v-for="skill in skills">
                                 <div class="circle"></div>
-                                <h4 v-html="markdown_render(skill.type)"></h4>
                                 <p v-html="markdown_render(skill.info)"></p>
                             </li>
                         </ul>
@@ -101,6 +108,11 @@
         markdown_render (arg) {
           // eslint-disable-next-line no-undef
           return marked((arg instanceof Array) ? arg.reduce((total, str) => total + str) : arg)
+        }
+      },
+      filters: {
+        markdown: function (arg) {
+          return this.markdown_render(arg)
         }
       },
       // eslint-disable-next-line no-undef
@@ -266,7 +278,7 @@
 
     .note {
         text-indent: 2em;
-        margin-top: 90px;
+        margin-top: 20px;
         color: #01579B;
         font-size: 18px
     }
@@ -381,7 +393,7 @@
     .exp > li {
         position: relative;
         top: -5px;
-        margin: 0 0 20px 20px
+        margin: 0 0 0 20px
     }
 
     .exp img {
