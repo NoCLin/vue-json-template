@@ -65,13 +65,13 @@
     <div class="template-list" v-if="showTemplateList" v-for="template in templateList">
         <a href="javascript:;" @click="changeTemplate(template)">{{template}}</a>
     </div>
-    <vuep v-if="!showTemplateList" v-model="template" :iframe="vuepIframeMode"></vuep>
+    <vuep v-if="!showTemplateList" v-model="vuep.template" :iframe="vuep.iframe" :scope="vuep.scope"></vuep>
 
 </div>
 
 <script>
-    function replaceTemplateRoot (str, root) {
-      return str.replace(/__DIR__\//g, root + '/')
+    function replaceTemplateRoot (str, root, parent) {
+      return str.replace(/__TEMPLATE_ROOT__\//g, root + '/').replace(/__TEMPLATE_PARENT_ROOT__\//g, parent + '/')
     }
 
     function getQueryString (key) {
@@ -182,9 +182,16 @@ animation-delay: 0.8s;
     new Vue({
       el: '#app',
       data: () => ({
-        template: loadingPlaceholder,
+
         templateList: [],
-        vuepIframeMode: false,
+        vuep: {
+          template: loadingPlaceholder,
+          iframe: false,
+          scope: {
+            'DATA_INJECT_HERE': null
+          }
+        },
+
         showTemplateList: (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost') && getQueryString('template') === ''
       }),
       async created () {
@@ -192,41 +199,42 @@ animation-delay: 0.8s;
           const templateIndex = await (await fetch('templates/index.json')).json()
           this.templateList = templateIndex['templates']
           if (this.showTemplateList) return
-          let templateName = getQueryString('template') || templateIndex['default']
-          let templateRoot = 'templates/' + templateName
-
+          const templateName = getQueryString('template') || templateIndex['default']
+          const templateRoot = 'templates/' + templateName
+          let templateParentName = templateName
+          let templateParentRoot = templateRoot
           const data = await (await fetch(templateRoot + '/data.json')).json() // data 不继承
           document.title = data['html-title']
 
           let config // 继承 config 与 template
           while (true) {
-            config = await (await fetch(templateRoot + '/config.json')).json()
+            config = await (await fetch(templateParentRoot + '/config.json')).json()
             if (!config['extends']) {
               break
             } else {
-              templateName = config['extends']
-              templateRoot = 'templates/' + templateName
+              templateParentName = config['extends']
+              templateParentRoot = 'templates/' + templateParentName
             }
           }
 
           // FIXME: iframe模式下，加载前外部js失败
-          let doc = this.vuepIframeMode ? window.frames[0].document : document
+          let doc = this.vuep.iframe ? window.frames[0].document : document
 
           if (config['external-js'] instanceof Array) {
             for (let url of config['external-js']) {
-              await asyncLoadJs(doc, replaceTemplateRoot(url, templateRoot))
+              await asyncLoadJs(doc, replaceTemplateRoot(url, templateRoot, templateParentRoot))
             }
           }
 
           if (config['external-css'] instanceof Array) {
             for (let url of config['external-css']) {
-              loadCss(doc, replaceTemplateRoot(url, templateRoot))
+              loadCss(doc, replaceTemplateRoot(url, templateRoot, templateParentRoot))
             }
           }
 
-          let template = await (await fetch(templateRoot + '/index.vue')).text()
-          template = template.replace(/DATA_INJECT_HERE/, JSON.stringify(data))
-          this.template = replaceTemplateRoot(template, templateRoot)
+          let template = await (await fetch(templateParentRoot + '/index.vue')).text()
+          this.vuep.scope['DATA_INJECT_HERE'] = data
+          this.vuep.template = replaceTemplateRoot(template, templateRoot, templateParentRoot)
         } catch (e) {
           alert(e.stack)
         }

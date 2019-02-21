@@ -3,7 +3,7 @@
         <div v-if="name">
             <div class="sidebar">
                 <div class="title">
-                    <img src="__DIR__/img/resume-head.jpg">
+                    <img src="__TEMPLATE_ROOT__/img/resume-head.jpg">
                     <h1>{{name}}</h1>
                     <h2>{{slogan}}</h2>
                 </div>
@@ -38,6 +38,12 @@
                 <ul class="main-info">
                     <li class="someRight">
                         <dt><i class="icon-bookmark"></i>Basic info. 基本信息</dt>
+                        <p>
+                            template root is __TEMPLATE_ROOT__/
+                        </p>
+                        <p>
+                            template parent root is __TEMPLATE_PARENT_ROOT__/
+                        </p>
                         <dd><strong>{{name}} / {{gender}} / {{birth}}</strong></dd>
                         <dd><strong>毕业院校:</strong> <span>{{school}}</span></dd>
                         <dd v-if="contact.blog">
@@ -449,8 +455,8 @@
 
     @font-face {
         font-family: fontello;
-        src: url(__DIR__/font/fontello.eot?32003456);
-        src: url(__DIR__/font/fontello.eot?32003456#iefix) format("embedded-opentype"), url(__DIR__/font/fontello.woff?32003456) format("woff"), url(__DIR__/font/fontello.ttf?32003456) format("truetype"), url(__DIR__/font/fontello.svg?32003456#fontello) format("svg");
+        src: url(__TEMPLATE_PARENT_ROOT__/font/fontello.eot?32003456);
+        src: url(__TEMPLATE_PARENT_ROOT__/font/fontello.eot?32003456#iefix) format("embedded-opentype"), url(__TEMPLATE_PARENT_ROOT__/font/fontello.woff?32003456) format("woff"), url(__TEMPLATE_PARENT_ROOT__/font/fontello.ttf?32003456) format("truetype"), url(__TEMPLATE_PARENT_ROOT__/font/fontello.svg?32003456#fontello) format("svg");
         font-weight: 400;
         font-style: normal
     }

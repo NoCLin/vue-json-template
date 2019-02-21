@@ -1,8 +1,9 @@
 {
-  "default": "resume-diygod",
-  "templates": [
-    "elementui-demo",
-    "resume-diygod",
-    "resume-diygod-sub"
-  ]
+    "default": "resume-diygod", 
+    "templates": [
+        "resume-for-cpp", 
+        "resume-for-java", 
+        "resume-diygod", 
+        "elementui-demo"
+    ]
 }

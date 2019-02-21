@@ -1,6 +1,6 @@
 {
   "external-js": [
-    "__DIR__/lib/marked.js"
+    "__TEMPLATE_PARENT_ROOT__/lib/marked.js"
   ],
   "external-css": [
   ]
